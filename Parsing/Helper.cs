@@ -10,6 +10,8 @@ namespace Parsing
     {
         public static string MinusHelper(this string temp)
         {
+
+
             string tempNew;
             if (temp.Contains("−"))
                 return tempNew = temp.Replace("−", "-");
