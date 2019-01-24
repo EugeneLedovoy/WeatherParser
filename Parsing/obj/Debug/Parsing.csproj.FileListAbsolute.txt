@@ -1,0 +1,10 @@
+C:\Users\ios\Desktop\#\Parsing\Parsing\bin\Debug\Parsing.exe.config
+C:\Users\ios\Desktop\#\Parsing\Parsing\bin\Debug\Parsing.exe
+C:\Users\ios\Desktop\#\Parsing\Parsing\bin\Debug\Parsing.pdb
+C:\Users\ios\Desktop\#\Parsing\Parsing\bin\Debug\AngleSharp.dll
+C:\Users\ios\Desktop\#\Parsing\Parsing\bin\Debug\AngleSharp.xml
+C:\Users\ios\Desktop\#\Parsing\Parsing\obj\Debug\Parsing.csproj.CoreCompileInputs.cache
+C:\Users\ios\Desktop\#\Parsing\Parsing\obj\Debug\Parsing.csproj.CopyComplete
+C:\Users\ios\Desktop\#\Parsing\Parsing\obj\Debug\Parsing.exe
+C:\Users\ios\Desktop\#\Parsing\Parsing\obj\Debug\Parsing.pdb
+C:\Users\ios\Desktop\#\Parsing\Parsing\obj\Debug\Parsing.csprojAssemblyReference.cache
