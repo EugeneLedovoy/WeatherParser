@@ -14,6 +14,7 @@ namespace Parsing
         public async void GetPreDataAsync()
         {
             Console.WriteLine("Парсинг начат!");
+
             Container container = new Container();
 
             var loader = new HtmlLoader(String.Empty);
@@ -41,9 +42,8 @@ namespace Parsing
                 await Task.Run(() => getter.GetDocumentAsync());
 
                 List<string> temperature = getter.ParseLink(container.TempTomorrowTag, container.ClassTitleTempTomorrow);
-                temperature.ForEach(t => t.Replace("−", "-"));
-                container._tempTomorrowNight.Add(temperature[2]);
-                container._tempTomorrowDay.Add(temperature[3]);
+                container._tempTomorrowNight.Add(temperature[2].Replace("−", "-"));
+                container._tempTomorrowDay.Add(temperature[3].Replace("−", "-"));
 
                 List<string> precip = getter.ParseLink(container.PrecipTag, container.ClassTitlePrecip, container.PrecipAtributeTag);
                 container._precip.Add(precip[0]);
@@ -55,6 +55,7 @@ namespace Parsing
             }
 
             Console.WriteLine("Парсинг завершен!");
+
             ParsingComplited?.Invoke(this, new ParsingEventArgs(container._nameList, container._tempTomorrowNight, container._tempTomorrowDay, 
                                                                 container._precip, container._linkList));
         }
