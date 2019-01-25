@@ -7,88 +7,56 @@ using System.Threading.Tasks;
 
 namespace Parsing
 {
-    partial class ProcessData
+    class ProcessData
     {
         public event EventHandler<ParsingEventArgs> ParsingComplited;
 
         public async void GetPreDataAsync()
         {
             Console.WriteLine("Парсинг начат!");
-
-            _tokenSource = new CancellationTokenSource();
-            CancellationToken token = _tokenSource.Token;
+            Container container = new Container();
 
             var loader = new HtmlLoader(String.Empty);
-            try
-            {
-                await Task.Run(() => loader.GetSourceAsync(token), token);
-            }
-            catch (OperationCanceledException e)
-            {
-                Console.WriteLine($"Операция загрузки Html-страницы отменена. {e.Message}");
-            }
+            await Task.Run(() => loader.GetSourceAsync());
 
             var getter = new InfoGetter(loader.Source);
-            try
-            {
-                await Task.Run(() => getter.GetDocumentAsync(token), token);
-            }
-            catch (OperationCanceledException e)
-            {
-                Console.WriteLine($"Операция построения DOM-документа отменена. {e.Message}");
-            }
+            await Task.Run(() => getter.GetDocumentAsync());
 
-            _linkList = getter.Parse(BaseTag, AtributeTag);
-            _nameList = getter.Parse(BaseTag, AtributeTagName);
+            container._linkList = getter.Parse(container.BaseTag, container.AtributeTag);
+            container._nameList = getter.Parse(container.BaseTag, container.AtributeTagName);
 
-            await Task.Run(() => GetForecastAsync());
-
+            await Task.Run(() => GetForecastAsync(container));
         }
 
-        private async void GetForecastAsync()
+
+        private async void GetForecastAsync(Container container)
         {
-            _tokenSource = new CancellationTokenSource();
-            CancellationToken token = _tokenSource.Token;
-
-            for (int i = 0; i < _linkList.Count; i++)
+            for (int i = 0; i < container._linkList.Count; i++)
             {
-                Console.WriteLine($"{_linkList[i]}");
-
-                var loader = new HtmlLoader(_linkList[i]);
-                try
-                {
-                    await Task.Run(() => loader.GetSourceAsync(token), token);
-                }
-               catch (OperationCanceledException e)
-                {
-                    Console.WriteLine($"Операция загрузки Html-страницы отменена. {e.Message}");
-                }
+                Console.WriteLine($"{container._linkList[i]}");
+                var loader = new HtmlLoader(container._linkList[i]);
+                await Task.Run(() => loader.GetSourceAsync());
 
                 var getter = new InfoGetter(loader.Source);
-                try
-                {
-                    await Task.Run(() => getter.GetDocumentAsync(token), token);
-                }
-                catch (OperationCanceledException e)
-                {
-                    Console.WriteLine($"Операция построения DOM-документа отменена. {e.Message}");
-                }
+                await Task.Run(() => getter.GetDocumentAsync());
 
-                List<string> temp = getter.ParseLink(TempTomorrowTag, ClassTitleTempTomorrow);
-                _tempTomorrowNight.Add(temp[2].MinusHelper());
-                _tempTomorrowDay.Add(temp[3].MinusHelper());
+                List<string> temperature = getter.ParseLink(container.TempTomorrowTag, container.ClassTitleTempTomorrow);
+                temperature.ForEach(t => t.Replace("−", "-"));
+                container._tempTomorrowNight.Add(temperature[2]);
+                container._tempTomorrowDay.Add(temperature[3]);
 
-                List<string> precip = getter.ParseLink(PrecipTag, ClassTitlePrecip, PrecipAtributeTag);
-                _precip.Add(precip[0]);
+                List<string> precip = getter.ParseLink(container.PrecipTag, container.ClassTitlePrecip, container.PrecipAtributeTag);
+                container._precip.Add(precip[0]);
             }
 
-            for (int i = 0; i < _nameList.Count; i++)
+            for (int i = 0; i < container._nameList.Count; i++)
             {
-                Console.WriteLine($"{_nameList[i]} {_tempTomorrowNight[i]} {_tempTomorrowDay[i]} {_precip[i]}");
+                Console.WriteLine($"{container._nameList[i]} {container._tempTomorrowNight[i]} {container._tempTomorrowDay[i]} {container._precip[i]}");
             }
 
             Console.WriteLine("Парсинг завершен!");
-            ParsingComplited?.Invoke(this, new ParsingEventArgs(_nameList, _tempTomorrowNight, _tempTomorrowDay, _precip, _linkList));
+            ParsingComplited?.Invoke(this, new ParsingEventArgs(container._nameList, container._tempTomorrowNight, container._tempTomorrowDay, 
+                                                                container._precip, container._linkList));
         }
     }
 }

@@ -11,13 +11,13 @@ namespace Parsing
 {
     class HtmlLoader
     {
-        public string BaseUrl { get; } = "https://www.gismeteo.ru";
-        public string Prefix { get; } = "tomorrow/";
         public string FinalLink { get; private set; }
         public string Source { get; private set; }
 
         public HtmlLoader(string hrefSublink)
         {
+            string BaseUrl = "https://www.gismeteo.ru";
+            string Prefix  = "tomorrow/";
             if (!string.IsNullOrEmpty(hrefSublink))
                 FinalLink = BaseUrl + hrefSublink + Prefix;
             else
@@ -28,8 +28,6 @@ namespace Parsing
         {
             using (HttpClient client = new HttpClient())
             {
-
-
                 try
                 {
                     HttpResponseMessage response = await client.GetAsync(FinalLink);
